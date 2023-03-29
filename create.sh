@@ -105,3 +105,6 @@ $(aws ec2 describe-instances \
 	--output text)
 
 echo "IP is $PUBLIC_IP"
+
+# Add tags
+# Add arguments before running
