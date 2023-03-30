@@ -4,7 +4,11 @@ $(aws ec2 create-vpc \
 	--query 'Vpc.{VpcId:VpcId}' \
 	--output text)
 
-echo "$VPC_ID created"
+aws ec2 create-tags \
+	--resources $VPC_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$VPC_ID created and tagged"
 
 SUBNET_ID=\
 $(aws ec2 create-subnet \
@@ -75,7 +79,15 @@ aws ec2 authorize-security-group-ingress \
 	--cidr 0.0.0.0/0 \
 	--output text > /dev/null
 
+aws ec2 authorize-security-group-ingress \
+	--group-id $SG_ID \
+	--protocol tcp \
+	--port 80 \
+	--cidr 0.0.0.0/0 \
+	--output text > /dev/null
+
 echo "SSH allowed for $SG_ID"
+echo "Port 80 opened for all on $SG_ID"
 
 KEY_PAIR=shtajiryan #change to your own key-pair name
 
