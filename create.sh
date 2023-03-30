@@ -1,3 +1,12 @@
+#!/bin/bash
+
+
+if [ $# = 0 ]; then
+	echo "No arguments provided"
+
+
+elif [ $1 = 'vpc' ]; then
+
 VPC_ID=\
 $(aws ec2 create-vpc \
 	--cidr-block 10.0.0.0/16 \
@@ -18,7 +27,11 @@ $(aws ec2 create-subnet \
 	--query 'Subnet.{SubnetId:SubnetId}' \
 	--output text)
 
-echo "$SUBNET_ID created"
+aws ec2 create-tags \
+	--resources $SUBNET_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$SUBNET_ID created and tagged"
 
 aws ec2 modify-subnet-attribute \
 	--subnet-id $SUBNET_ID \
@@ -31,7 +44,11 @@ $(aws ec2 create-internet-gateway \
 	--query 'InternetGateway.{InternetGatewayId:InternetGatewayId}' \
 	--output text)
 
-echo "$IG_ID created"
+aws ec2 create-tags \
+	--resources $IG_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$IG_ID created and tagged"
 
 aws ec2 attach-internet-gateway \
 	--vpc-id $VPC_ID \
@@ -45,7 +62,11 @@ $(aws ec2 create-route-table \
 	--query 'RouteTable.{RouteTableId:RouteTableId}' \
 	--output text)
 
-echo "$RT_ID created"
+aws ec2 create-tags \
+	--resources $RT_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$RT_ID created and tagged"
 
 aws ec2 associate-route-table \
 	--route-table-id $RT_ID \
@@ -70,7 +91,11 @@ $(aws ec2 create-security-group \
 	--query 'GroupId' \
 	--output text)
 
-echo "$SG_ID created"
+aws ec2 create-tags \
+	--resources $SG_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$SG_ID created and tagged"
 
 aws ec2 authorize-security-group-ingress \
 	--group-id $SG_ID \
@@ -89,7 +114,22 @@ aws ec2 authorize-security-group-ingress \
 echo "SSH allowed for $SG_ID"
 echo "Port 80 opened for all on $SG_ID"
 
+
+elif [ $1 = 'instance' ]; then
+
 KEY_PAIR=shtajiryan #change to your own key-pair name
+
+SUBNET_ID=\
+$(aws ec2 describe-subnets \
+	--filters "Name=tag:DeleteMe,Values=Yes" \
+	--query 'Subnets[*].SubnetId' \
+	--output text)
+
+SG_ID=\
+$(aws ec2 describe-security-groups \
+    --filters Name=group-name,Values=*aca* Name=tag:DeleteMe,Values=Yes \
+    --query "SecurityGroups[*].{ID:GroupId}" \
+    --output text)
 
 INSTANCE_ID=\
 $(aws ec2 run-instances \
@@ -103,7 +143,11 @@ $(aws ec2 run-instances \
 	--query 'Instances[0].InstanceId' \
 	--output text)
 
-echo "$INSTANCE_ID created"
+aws ec2 create-tags \
+	--resources $INSTANCE_ID \
+	--tags Key=DeleteMe,Value=Yes
+
+echo "$INSTANCE_ID created and tagged"
 
 # aws ec2 describe-instances \
 # --instance-ids $INSTANCE_ID \
@@ -118,5 +162,4 @@ $(aws ec2 describe-instances \
 
 echo "IP is $PUBLIC_IP"
 
-# Add tags
-# Add arguments before running
+fi
