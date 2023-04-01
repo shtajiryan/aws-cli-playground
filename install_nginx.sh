@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh -i ~/Downloads/shtajiryan.pem ubuntu@$IP 'sudo apt install nginx -y'
+ssh -i $key ubuntu@$IP 'sudo apt install nginx -y'
