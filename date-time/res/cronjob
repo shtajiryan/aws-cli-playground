@@ -1,0 +1,2 @@
+* * * * * date > /var/www/date-time/index.html
+* * * * * sleep 30; date > /var/www/date-time/index.html
