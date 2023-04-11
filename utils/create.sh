@@ -83,36 +83,36 @@ aws ec2 create-route \
 
 echo "route created"
 
-SG_ID=\
-$(aws ec2 create-security-group \
-	--group-name acatest \
-	--description "aca test security group" \
-	--vpc-id $VPC_ID \
-	--query 'GroupId' \
-	--output text)
+# SG_ID=\
+# $(aws ec2 create-security-group \
+# 	--group-name acatest \
+# 	--description "aca test security group" \
+# 	--vpc-id $VPC_ID \
+# 	--query 'GroupId' \
+# 	--output text)
 
-aws ec2 create-tags \
-	--resources $SG_ID \
-	--tags Key=DeleteMe,Value=Yes
+# aws ec2 create-tags \
+# 	--resources $SG_ID \
+# 	--tags Key=DeleteMe,Value=Yes
 
-echo "$SG_ID created and tagged"
+# echo "$SG_ID created and tagged"
 
-aws ec2 authorize-security-group-ingress \
-	--group-id $SG_ID \
-	--protocol tcp \
-	--port 22 \
-	--cidr 0.0.0.0/0 \
-	--output text > /dev/null
+# aws ec2 authorize-security-group-ingress \
+# 	--group-id $SG_ID \
+# 	--protocol tcp \
+# 	--port 22 \
+# 	--cidr 0.0.0.0/0 \
+# 	--output text > /dev/null
 
-aws ec2 authorize-security-group-ingress \
-	--group-id $SG_ID \
-	--protocol tcp \
-	--port 80 \
-	--cidr 0.0.0.0/0 \
-	--output text > /dev/null
+# aws ec2 authorize-security-group-ingress \
+# 	--group-id $SG_ID \
+# 	--protocol tcp \
+# 	--port 80 \
+# 	--cidr 0.0.0.0/0 \
+# 	--output text > /dev/null
 
-echo "SSH allowed for $SG_ID"
-echo "Port 80 opened for all on $SG_ID"
+# echo "SSH allowed for $SG_ID"
+# echo "Port 80 opened for all on $SG_ID"
 
 
 elif [ $1 = 'instance' ]; then

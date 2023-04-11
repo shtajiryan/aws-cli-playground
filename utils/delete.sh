@@ -28,16 +28,16 @@ echo "$INSTANCE_ID terminated"
 
 elif [ $1 = 'vpc' ]; then
 
-SG_ID=\
-$(aws ec2 describe-security-groups \
-	--filters "Name=tag:DeleteMe,Values=Yes" \
-	--query 'SecurityGroups[*].GroupId' \
-	--output text)
+# SG_ID=\
+# $(aws ec2 describe-security-groups \
+# 	--filters "Name=tag:DeleteMe,Values=Yes" \
+# 	--query 'SecurityGroups[*].GroupId' \
+# 	--output text)
 
-aws ec2 delete-security-group \
-	--group-id $SG_ID
+# aws ec2 delete-security-group \
+# 	--group-id $SG_ID
 
-echo "$SG_ID deleted"
+# echo "$SG_ID deleted"
 
 SUBNET_ID=\
 $(aws ec2 describe-subnets \
