@@ -23,6 +23,7 @@ if [ -z "$IGW_ID" ]; then
 
 else
 create_rt
+
 fi
 if [ -z "$RT_ID" ]; then
     echo "Won't create the rest of resources as Route table ID is empty" && exit
