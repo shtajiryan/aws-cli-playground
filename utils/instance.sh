@@ -3,8 +3,8 @@
 create_sg ()
 {
     SG_ID=$(aws ec2 create-security-group \
-	    --group-name acatest \
-	    --description "aca test security group" \
+        --group-name acatest \
+        --description "aca test security group" \
         --vpc-id $VPC_ID \
         --query 'GroupId' \
         --output text)
