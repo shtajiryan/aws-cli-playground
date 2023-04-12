@@ -65,6 +65,8 @@ create_igw ()
 
         echo "$IGW_ID attached to $VPC_ID"
     fi
+
+# check attachment status
 }
 
 create_rt ()
@@ -98,4 +100,54 @@ create_rt ()
 
         echo "route created"
     fi
+}
+
+delete_subnet ()
+{
+    SUBNET_ID=$(aws ec2 describe-subnets \
+	    --filters "Name=tag:DeleteMe,Values=Yes" \
+	    --query 'Subnets[*].SubnetId' \
+	    --output text)
+
+    aws ec2 delete-subnet \
+	    --subnet-id $SUBNET_ID
+}
+
+delete_rt ()
+{
+    RT_ID=$(aws ec2 describe-route-tables \
+	    --filters "Name=tag:DeleteMe,Values=Yes" \
+	    --query 'RouteTables[*].{RouteTableId:RouteTableId}' \
+	    --output text)
+
+    aws ec2 delete-route-table \
+	    --route-table-id $RT_ID
+}
+
+delete_igw ()
+{
+    IGW_ID=$(aws ec2 describe-internet-gateways \
+	    --filters "Name=tag:DeleteMe,Values=Yes" \
+	    --query 'InternetGateways[*].{InternetGatewayId:InternetGatewayId}' \
+	    --output text)
+
+    VPC_ID=$(aws ec2 describe-vpcs \
+	    --filters "Name=tag:DeleteMe,Values=Yes" \
+	    --query "Vpcs[*].VpcId" \
+	    --output text)
+
+    aws ec2 detach-internet-gateway \
+	    --internet-gateway-id $IGW_ID \
+	    --vpc-id $VPC_ID
+
+    echo "$IGW_ID detached from $VPC_ID"
+
+    aws ec2 delete-internet-gateway \
+	    --internet-gateway-id $IGW_ID
+}
+
+delete_vpc ()
+{
+    aws ec2 delete-vpc \
+	--vpc-id $VPC_ID
 }

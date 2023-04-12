@@ -89,13 +89,6 @@ delete_instance ()
     fi
 }
 
-# instance_state ()
-# {
-#     INSTANCE_STATE=$(aws ec2 describe-instance \
-#         --filters "Name=instance-state-code, Values=16
-#         )
-# }
-
 delete_sg ()
 {
     SG_ID=$(aws ec2 describe-security-groups \
@@ -105,6 +98,12 @@ delete_sg ()
 
     aws ec2 delete-security-group \
         --group-id $SG_ID
+}
 
-    echo "$SG_ID deleted"
+instance_state ()
+{
+    INSTANCE_STATE=$(aws ec2 describe-instances \
+        --instance-ids $INSTANCE_ID \
+        --query 'Reservations[*].Instances[*].State.Code' \
+        --output text)
 }
